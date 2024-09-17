@@ -279,3 +279,4 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # Your stuff...
 # ------------------------------------------------------------------------------
 TAILWIND_APP_NAME = "theme"
+OPEN_AI_KEY = env.str("OPEN_AI_KEY")

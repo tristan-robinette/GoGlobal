@@ -17,32 +17,61 @@
   </div>
   <div class="sticky w-full bottom-0 px-4 py-3 pb-8 flex items-center justify-center shadow-md">
     <div class="w-full flex items-start space-x-4 max-w-2xl">
-      <div class="min-w-0 flex-1">
-        <form>
+      <div x-data="audioRecorder()" class="min-w-0 flex-1">
+        <form x-target="app" method="post" action="{% url 'app' %}">
+          {% csrf_token %}
+          <input type="hidden" id="audio-data" name="audio_data" />
+          <input type="hidden" name="language" value="fr" />
           <label for="chat" class="sr-only">Your message</label>
           <div class="bg-white flex items-center px-3 py-2 shadow ring-1 ring-inset ring-neutral-200 rounded-lg">
             <textarea id="chat"
                       rows="1"
                       class="resize-none border-0 block me-4 p-2.5 w-full text-sm text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Your message..."></textarea>
-            <button type="button"
-                    class="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                   width="24"
-                   height="24"
-                   viewBox="0 0 24 24"
-                   fill="none"
-                   stroke="currentColor"
-                   stroke-width="2"
-                   stroke-linecap="round"
-                   stroke-linejoin="round"
-                   class="size-5">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                <line x1="12" x2="12" y1="19" y2="22" />
-              </svg>
-            </button>
-            <button type="submit"
+                      placeholder="Your message...">{{ foo }}</textarea>
+            <div class="relative flex items-center me-2">
+              <button x-show="!isRecording"
+                      @click="toggleRecording"
+                      type="button"
+                      :class="isRecording ? 'text-green-600': 'text-gray-500'"
+                      class="inline-flex justify-center p-2 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="24"
+                     height="24"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="size-5">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" x2="12" y1="19" y2="22" />
+                </svg>
+              </button>
+              <template x-if="isRecording">
+                <button @click="cancelRecording"
+                        type="button"
+                        class="inline-flex text-red-400 justify-center p-2 rounded-lg cursor-pointer hover:text-red-900">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       width="24"
+                       height="24"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       stroke="currentColor"
+                       stroke-width="2"
+                       stroke-linecap="round"
+                       stroke-linejoin="round"
+                       class="size-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
+              </template>
+            </div>
+            <button x-show="false" x-ref="submitBtn" type="submit"></button>
+            <button @click.prevent="stopRecording"
+                    type="button"
                     class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
               <svg xmlns="http://www.w3.org/2000/svg"
                    width="24"
