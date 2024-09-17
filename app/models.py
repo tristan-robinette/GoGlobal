@@ -8,7 +8,7 @@ class Conversation(models.Model):
     language = models.CharField(max_length=50, default="fr")
 
     def __str__(self):
-        return self.user
+        return self.user.email
 
     @property
     def messages_param(self):
@@ -28,6 +28,7 @@ class Message(models.Model):
     )
     role = models.CharField(max_length=50, choices=RoleOptions.choices)
     content = models.TextField()
+    created_at = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.role
