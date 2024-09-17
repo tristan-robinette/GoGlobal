@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-4">
+  <div x-init="$el.scrollTop = $el.scrollHeight;"
+       :id="$id('messages-container')"
+       class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-4">
     <div class="space-y-4">
-      <div class="flex justify-start">
-        <div class="bg-white p-4 rounded-md shadow-sm max-w-xs">
-          <p class="text-sm text-gray-900">Hello! How can I help you today?</p>
+      {% for message in conversation.messages.all %}
+        <div class="flex {% if message.role == 'assistant' %}justify-start{% else %}justify-end{% endif %}">
+          <div class="{% if message.role == 'assistant' %}text-gray-900 bg-white{% else %}text-white bg-blue-500{% endif %} p-4 rounded-md shadow-sm max-w-sm sm:max-w-md">
+            <div class="text-sm">{{ message.content|linebreaksbr }}</div>
+          </div>
         </div>
-      </div>
-      <div class="flex justify-end">
-        <div class="bg-indigo-600 text-white p-4 rounded-md shadow-sm max-w-xs">
-          <p class="text-sm">I need some information on your services.</p>
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </div>
   <div class="sticky w-full bottom-0 px-4 py-3 pb-8 flex items-center justify-center shadow-md">
@@ -26,8 +25,10 @@
           <div class="bg-white flex items-center px-3 py-2 shadow ring-1 ring-inset ring-neutral-200 rounded-md">
             <textarea id="chat"
                       rows="1"
+                      x-ref="textArea"
+                      name="user_content"
                       class="resize-none border-0 block me-4 p-2.5 w-full text-sm text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Your message...">{{ foo }}</textarea>
+                      placeholder="Your message..."></textarea>
             <div class="relative flex items-center me-2">
               <button x-show="!isRecording"
                       @click="toggleRecording"
@@ -70,7 +71,7 @@
               </template>
             </div>
             <button x-show="false" x-ref="submitBtn" type="submit"></button>
-            <button @click.prevent="stopRecording"
+            <button @click="if($refs.textArea.value){$refs.submitBtn.click()}else{stopRecording}"
                     type="button"
                     class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
               <svg xmlns="http://www.w3.org/2000/svg"
