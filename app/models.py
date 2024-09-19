@@ -27,6 +27,7 @@ class Message(models.Model):
         related_name="messages",
     )
     role = models.CharField(max_length=50, choices=RoleOptions.choices)
+    audio_link = models.FileField(upload_to="audio/", null=True, blank=True)
     content = models.TextField()
     created_at = models.DateField(auto_now=True)
 
@@ -36,5 +37,3 @@ class Message(models.Model):
     @property
     def as_message(self):
         return {"role": self.role, "content": self.content}
-
-    # todo figure out how to store the Audio version of the message.

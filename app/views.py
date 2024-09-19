@@ -1,68 +1,21 @@
-import base64
-import tempfile
-
 from django.conf import settings
 from django.shortcuts import render
 from openai import OpenAI
 
-from app.models import Conversation
+from app.ai import generate_audio_and_save
+from app.ai import generate_next_response
+from app.ai import get_initial_conversation
+from app.ai import get_transcription_from_bs64
 from app.models import Message
 from goglobal.users.models import User
 
 client = OpenAI(api_key=settings.OPEN_AI_KEY)
 
 
-def get_transcription_from_bs64(data: bytes, **kwargs) -> str:
-    audio_file = base64.b64decode(data)
-    with tempfile.NamedTemporaryFile(suffix=".wav") as tmp_file:
-        tmp_file.write(audio_file)
-        kwargs.pop("model", None)
-        kwargs.pop("file", None)
-        with open(tmp_file.name, "rb") as file_for_transcription:  # noqa: PTH123
-            transcription = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=file_for_transcription,
-                **kwargs,
-            )
-            return transcription.text
-
-
-def generate_next_response(conversation: Conversation) -> str:
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": f"You are a helpful assistant teaching someone "
-                f"how to speak {conversation.language}. When responding, "
-                f"keep your language simple and easy for beginners of "
-                f"the {conversation.language} language. Always respond "
-                f"in {conversation.language}. Keep the conversation flowing "
-                f"by asking a new question at the end based on the conversation. "
-                f"Only respond in a few sentences to emulate a real chat experience.",
-            },
-            *conversation.messages_param,
-        ],
-    )
-    return completion.choices[0].message.content
-
-
-def get_initial_conversation(user: User) -> Conversation:
-    conversation, created = Conversation.objects.get_or_create(user=user)
-    if created:
-        Message.objects.create(
-            conversation=conversation,
-            role="assistant",
-            content="Bonjour Laura, je suis votre assistant Tristan ici pour "
-            "vous apprendre "
-            "le français. Pourquoi ne commences-tu pas par me parler et me dire ce que "
-            "tu as fait aujourd'hui ?",
-        )
-    return conversation
-
-
 def index(request):
-    conversation = get_initial_conversation(request.user)
+    user = User.objects.first()
+
+    conversation = get_initial_conversation(user)
     ctx = {
         "conversation": conversation,
     }
@@ -87,3 +40,11 @@ def index(request):
             content=agent_response,
         )
     return render(request, "pages/home.html", context=ctx)
+
+
+def transcribe(request, pk):
+    message = Message.objects.filter(id=pk).first()
+    if not message.audio_link:
+        generate_audio_and_save(message)
+    ctx = {"message": message}
+    return render(request, "fragments/audio_transcription.html", context=ctx)
