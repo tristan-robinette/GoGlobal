@@ -1,12 +1,15 @@
+from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from .views import user_detail_view
-from .views import user_redirect_view
-from .views import user_update_view
+from goglobal.users.views import UserRegistrationView
 
 app_name = "users"
 urlpatterns = [
-    path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
-    path("<int:pk>/", view=user_detail_view, name="detail"),
+    path(
+        "login/",
+        auth_views.LoginView.as_view(template_name="users/login.html"),
+        name="login",
+    ),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("register/", UserRegistrationView.as_view(), name="register"),
 ]

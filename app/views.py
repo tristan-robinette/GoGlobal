@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from openai import OpenAI
 
@@ -7,15 +8,13 @@ from app.ai import generate_next_response
 from app.ai import get_initial_conversation
 from app.ai import get_transcription_from_bs64
 from app.models import Message
-from goglobal.users.models import User
 
 client = OpenAI(api_key=settings.OPEN_AI_KEY)
 
 
+@login_required
 def index(request):
-    user = User.objects.first()
-
-    conversation = get_initial_conversation(user)
+    conversation = get_initial_conversation(request.user)
     ctx = {
         "conversation": conversation,
     }
@@ -42,6 +41,7 @@ def index(request):
     return render(request, "pages/home.html", context=ctx)
 
 
+@login_required
 def transcribe(request, pk):
     message = Message.objects.filter(id=pk).first()
     if not message.audio_link:

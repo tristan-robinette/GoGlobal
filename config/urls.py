@@ -8,14 +8,8 @@ from django.views import defaults as default_views
 
 urlpatterns = [
     path("", include("app.urls")),
-    # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # User management
     path("users/", include("goglobal.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
-    # ...
-    # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
 

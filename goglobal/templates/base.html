@@ -16,10 +16,15 @@
     {% block css %}
       {% compress css %}
         {% tailwind_css %}
+        <style>
+          [x-cloak] {
+            display: none !important;
+          }
+        </style>
       {% endcompress %}
     {% endblock css %}
     <!-- Le javascript
-      ================================================== -->
+    ================================================== -->
     {# Placed at the top of the document so pages load faster with defer #}
     {% block javascript %}
       {% compress js %}
@@ -32,7 +37,9 @@
   </head>
   <body x-init class="h-full">
     <div x-data="{ open: false }">
-      <div class="relative z-50 lg:hidden"
+      <div x-cloak
+           {% if not request.user.is_authenticated %}x-show="false"{% endif %}
+           class="relative z-50 lg:hidden"
            role="dialog"
            aria-modal="true"
            x-show="open"
@@ -121,7 +128,9 @@
               <path d="M7 18a6 6 0 0 0 3.84-10.61" />
             </svg>
           </div>
-          <nav class="flex flex-1 flex-col">
+          <nav x-cloak
+               {% if not request.user.is_authenticated %}x-show="false"{% endif %}
+               class="flex flex-1 flex-col">
             <ul role="list" class="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" class="-mx-2 space-y-1">
@@ -133,15 +142,12 @@
                   </li>
                 </ul>
               </li>
-              <li x-cloak x-show="false" class="-mx-6 mt-auto">
-                <a href="#"
-                   class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
-                  <img class="h-8 w-8 rounded-full bg-gray-50"
-                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                       alt="" />
-                  <span class="sr-only">Your profile</span>
-                  <span aria-hidden="true">Tom Cook</span>
-                </a>
+              <li class="-mx-6 mt-auto">
+                <form method="post" action="{% url 'users:logout' %}">
+                  {% csrf_token %}
+                  <button class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                          type="submit">logout</button>
+                </form>
               </li>
             </ul>
           </nav>

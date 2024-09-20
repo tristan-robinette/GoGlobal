@@ -70,10 +70,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "allauth",
-    "allauth.account",
-    "allauth.mfa",
-    "allauth.socialaccount",
     "tailwind",
 ]
 
@@ -81,7 +77,6 @@ LOCAL_APPS = [
     "goglobal.users",
     "app",
     "theme",
-    # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -96,14 +91,13 @@ MIGRATION_MODULES = {"sites": "goglobal.contrib.sites.migrations"}
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "app"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "account_login"
+LOGIN_URL = "users:login"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -137,7 +131,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 # STATIC
@@ -184,7 +177,6 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "goglobal.users.context_processors.allauth_settings",
             ],
         },
     },
@@ -221,9 +213,6 @@ EMAIL_TIMEOUT = 5
 # ------------------------------------------------------------------------------
 # Django Admin URL.
 ADMIN_URL = "admin/"
-# https://cookiecutter-django.readthedocs.io/en/latest/settings.html#other-environment-settings
-# Force the `admin` sign in process to go through the `django-allauth` workflow
-DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -252,24 +241,6 @@ LOGGING = {
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_USERNAME_REQUIRED = False
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_ADAPTER = "goglobal.users.adapters.AccountAdapter"
-# https://docs.allauth.org/en/latest/account/forms.html
-ACCOUNT_FORMS = {"signup": "goglobal.users.forms.UserSignupForm"}
-# https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_ADAPTER = "goglobal.users.adapters.SocialAccountAdapter"
-# https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_FORMS = {"signup": "goglobal.users.forms.UserSocialSignupForm"}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
@@ -280,3 +251,5 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # ------------------------------------------------------------------------------
 TAILWIND_APP_NAME = "theme"
 OPEN_AI_KEY = env.str("OPEN_AI_KEY")
+
+LOGOUT_REDIRECT_URL = "/"
