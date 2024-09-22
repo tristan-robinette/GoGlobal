@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development --watch",
     "tailwind": "cross-env NODE_ENV=development tailwindcss --postcss -i ./theme/static_src/src/styles.css -o ./theme/static/css/dist/styles.css -w",
-    "build": "rimraf ./theme/static/css/dist && cross-env NODE_ENV=production tailwindcss --postcss -i ./theme/static_src/src/styles.css -o ./theme/static/css/dist/styles.css --minify && webpack --mode production --config ./webpack.config.js"
+    "build": "rimraf ./theme/static/css/dist && cross-env NODE_ENV=production tailwindcss --postcss -i ./theme/static_src/src/styles.css -o ./theme/static/css/dist/styles.css --minify"
   },
   "keywords": [],
   "author": "",
