@@ -7,7 +7,7 @@ nixLibs = ["...", "gcc-unwrapped", "zlib", "stdenv.cc.cc.lib"]
 cacheDirectories = ["...", "/root/.cache/pip"]
 paths = ["...", "/opt/venv/bin"]
 cmds = [
-    "python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install poetry==1.8.3 && poetry install --without dev --no-interaction --no-ansi",
+    "python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install poetry==1.8.3 && poetry install --no-interaction --no-ansi",
     "..."
 ]
 dependsOn = ["setup"]
