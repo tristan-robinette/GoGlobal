@@ -30,10 +30,10 @@ class Message(models.Model):
     audio_link = models.FileField(upload_to="audio/", null=True, blank=True)
     content = models.TextField()
     english_translation = models.TextField(blank=True, default="")
-    created_at = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ("created_at",)
+        ordering = ("id",)
 
     def __str__(self):
         return self.role
