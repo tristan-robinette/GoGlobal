@@ -56,9 +56,9 @@
   ================================================== -->
     {# Placed at the top of the document so pages load faster with defer #}
     {% block javascript %}
+      <script defer
+              src="https://cdn.jsdelivr.net/npm/@imacrayon/alpine-ajax@0.9.0/dist/cdn.min.js"></script>
       {% compress js %}
-        <script defer
-                src="https://cdn.jsdelivr.net/npm/@imacrayon/alpine-ajax@0.9.0/dist/cdn.min.js"></script>
         <script defer src="{% static 'js/project.js' %}"></script>
         <script src="//unpkg.com/alpinejs" defer></script>
       {% endcompress %}
