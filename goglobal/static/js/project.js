@@ -42,7 +42,6 @@ function audioRecorder() {
           reader.onloadend = () => {
             document.getElementById('audio-data').value = reader.result.split(',')[1];
             this.$nextTick(() => {
-              // this.$dispatch('submit-chat')
                 this.$refs.submitBtn.click()
           });
           };
