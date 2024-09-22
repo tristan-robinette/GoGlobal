@@ -29,6 +29,7 @@ class Message(models.Model):
     role = models.CharField(max_length=50, choices=RoleOptions.choices)
     audio_link = models.FileField(upload_to="audio/", null=True, blank=True)
     content = models.TextField()
+    english_translation = models.TextField(blank=True, default="")
     created_at = models.DateField(auto_now=True)
 
     class Meta:

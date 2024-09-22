@@ -82,3 +82,22 @@ def generate_audio_and_save(message: Message):
     message.audio_link.save(f"audio_{message.id}.mp3", audio_content)
     message.save()
     return message
+
+
+def translate_text_to_english(message: Message) -> Message:
+    if message.english_translation:
+        return message
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an expert translater. "
+                "Give me back the text in English.",
+            },
+            {"role": "user", "content": message.content},
+        ],
+    )
+    message.english_translation = completion.choices[0].message.content
+    message.save()
+    return message

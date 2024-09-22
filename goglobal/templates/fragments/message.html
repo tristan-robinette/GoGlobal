@@ -1,0 +1,55 @@
+<div id="message-{{ message.id }}"
+     class="flex flex-col {% if message.role == 'assistant' %}items-start{% else %}items-end{% endif %}">
+  <div class="space-y-4 {% if message.role == 'assistant' %}text-gray-900 bg-white{% else %}text-white bg-blue-500{% endif %} p-4 rounded-md shadow-sm max-w-sm sm:max-w-md">
+    <div class="text-sm">{{ message.content|linebreaksbr }}</div>
+    {% if message.english_translation %}
+      <div class="text-xs text-gray-600">{{ message.english_translation|linebreaksbr }}</div>
+    {% endif %}
+  </div>
+  <div class="flex space-x-2 items-center">
+    <a id="message-btn-{{ message.id }}"
+       method="post"
+       href="{% url 'transcribe' message.id %}"
+       x-target
+       class="mt-2 text-gray-600 hover:text-gray-900">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="24"
+           height="24"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           class="size-4">
+        <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" />
+        <path d="M16 9a5 5 0 0 1 0 6" />
+      </svg>
+    </a>
+    {% if not message.english_translation and message.role == 'assistant' %}
+      <a id="translate-btn-{{ message.id }}"
+         method="post"
+         href="{% url 'translate' message.id %}"
+         x-target="message-{{ message.id }}"
+         class="mt-2 text-gray-600 hover:text-gray-900">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             class="size-4">
+          <path d="m5 8 6 6" />
+          <path d="m4 14 6-6 2-3" />
+          <path d="M2 5h12" />
+          <path d="M7 2h1" />
+          <path d="m22 22-5-10-5 10" />
+          <path d="M14 18h6" />
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+</div>

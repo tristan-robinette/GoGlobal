@@ -7,6 +7,7 @@ from app.ai import generate_audio_and_save
 from app.ai import generate_next_response
 from app.ai import get_initial_conversation
 from app.ai import get_transcription_from_bs64
+from app.ai import translate_text_to_english
 from app.models import Message
 
 client = OpenAI(api_key=settings.OPEN_AI_KEY)
@@ -48,3 +49,11 @@ def transcribe(request, pk):
         generate_audio_and_save(message)
     ctx = {"message": message}
     return render(request, "fragments/audio_transcription.html", context=ctx)
+
+
+@login_required
+def translate(request, pk):
+    message = Message.objects.filter(id=pk).first()
+    message = translate_text_to_english(message)
+    ctx = {"message": message}
+    return render(request, "fragments/message.html", context=ctx)
