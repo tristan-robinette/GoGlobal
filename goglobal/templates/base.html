@@ -58,10 +58,8 @@
     {% block javascript %}
       <script defer
               src="https://cdn.jsdelivr.net/npm/@imacrayon/alpine-ajax@0.9.0/dist/cdn.min.js"></script>
-      {% compress js %}
-        <script defer src="{% static 'js/project.js' %}"></script>
-        <script src="//unpkg.com/alpinejs" defer></script>
-      {% endcompress %}
+      <script defer src="{% static 'js/project.js' %}"></script>
+      <script src="//unpkg.com/alpinejs" defer></script>
     {% endblock javascript %}
   </head>
   <body x-init class="h-full">
